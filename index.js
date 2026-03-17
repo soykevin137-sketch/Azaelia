@@ -167,8 +167,20 @@ if (executablePath) {
 }
 
 const client = new Client({
-    authStrategy: new LocalAuth({ clientId: 'default' }),
-    puppeteer: puppeteerConfig
+    authStrategy: new LocalAuth(),
+    puppeteer: {
+        executablePath: '/data/data/com.termux/files/usr/bin/chromium',
+        args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-extensions',
+            '--disable-dev-shm-usage',
+            '--disable-accelerated-2d-canvas',
+            '--no-first-run',
+            '--no-zygote',
+            '--single-process'
+        ]
+    }
 });
 
 client.on('qr', (qr) => {
