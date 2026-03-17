@@ -143,23 +143,32 @@ function getLocaleFromJid(jid) {
 }
 
 
+// Permite usar un binario de Chrome/Chromium personalizado (útil en Termux)
+const executablePath = process.env.CHROME_PATH || process.env.CHROMIUM_PATH || '';
+
+const puppeteerConfig = {
+    headless: true,
+    args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-gpu',
+        '--no-first-run',
+        '--disable-background-timer-throttling',
+        '--disable-backgrounding-occluded-windows',
+        '--disable-renderer-backgrounding'
+    ],
+    defaultViewport: null,
+    timeout: 60000
+};
+
+if (executablePath) {
+    puppeteerConfig.executablePath = executablePath;
+}
+
 const client = new Client({
     authStrategy: new LocalAuth({ clientId: 'default' }),
-    puppeteer: {
-        headless: true,
-        args: [
-            '--no-sandbox',
-            '--disable-setuid-sandbox',
-            '--disable-dev-shm-usage',
-            '--disable-gpu',
-            '--no-first-run',
-            '--disable-background-timer-throttling',
-            '--disable-backgrounding-occluded-windows',
-            '--disable-renderer-backgrounding'
-        ],
-        defaultViewport: null,
-        timeout: 60000
-    }
+    puppeteer: puppeteerConfig
 });
 
 client.on('qr', (qr) => {
